@@ -1,0 +1,20 @@
+Genarating the ecdsa keys to c file
+bharathkammara@bharaths-MacBook-Air cortex_m33_pico2_mcuboot_port % python3 external/mcuboot/scripts/imgtool.py keygen -k root-ec-p256.pem -t ecdsa-p256
+bharathkammara@bharaths-MacBook-Air cortex_m33_pico2_mcuboot_port % ls -ls
+total 40
+ 8 -rw-r--r--@  1 bharathkammara  staff  2385 Mar 30 07:48 Makefile
+ 8 -rw-r--r--@  1 bharathkammara  staff    68 Mar  8 19:54 README.md
+ 0 drwxr-xr-x@  7 bharathkammara  staff   224 Mar 30 18:56 application
+ 0 drwxr-xr-x@  7 bharathkammara  staff   224 Mar 30 18:55 bootloader
+ 0 drwxr-xr-x@  5 bharathkammara  staff   160 Mar  9 22:21 common
+ 0 drwxr-xr-x@  3 bharathkammara  staff    96 Mar 21 18:36 external
+16 -rw-r--r--@  1 bharathkammara  staff  5922 Mar 30 08:50 gdb_session.log
+ 0 -rw-r--r--@  1 bharathkammara  staff     0 Mar 30 21:28 keys.c
+ 0 drwxr-xr-x@ 59 bharathkammara  staff  1888 Mar 26 22:56 openocd
+ 0 drwxr-xr-x@ 27 bharathkammara  staff   864 Mar  8 20:53 pico-sdk
+ 8 -rw-r--r--@  1 bharathkammara  staff   241 Mar 30 21:30 root-ec-p256.pem
+bharathkammara@bharaths-MacBook-Air cortex_m33_pico2_mcuboot_port % python3 external/mcuboot/scripts/imgtool.py getpub -k ./root-ec-p256.pem > keys.c
+bharathkammara@bharaths-MacBook-Air cortex_m33_pico2_mcuboot_port % 
+
+
+python3 imgtool.py verify --key '/Users/bharathkammara/Desktop/rpi_pico2/cortex_m33_pico2_mcuboot_port/common/src/root-ec-p256.pem'
