@@ -7,6 +7,7 @@ COMPILER ?= arm-none-eabi-gcc
 
 COMMON_DIR = $(ROOT_DIR)/common
 COMMON_SRC_DIR = $(COMMON_DIR)/src
+EXTERNAL_DIR := $(ROOT_DIR)/external
 
 APPLICATION_DIR = $(ROOT_DIR)/application
 BUILD_DIR  := $(APPLICATION_DIR)/build
@@ -26,7 +27,7 @@ SRC_FILES += \
 	
 
 ############## PICO-SDK ##############
-PICO_SDK_BASE_DIR := $(ROOT_DIR)/pico-sdk
+PICO_SDK_BASE_DIR := $(EXTERNAL_DIR)/pico-sdk
 PICO_SDK_SRC_DIR = $(PICO_SDK_BASE_DIR)/src
 
 SRC_FILES += \
@@ -44,6 +45,7 @@ SRC_FILES += \
 	$(PICO_SDK_SRC_DIR)/common/pico_sync/mutex.c \
 	$(PICO_SDK_SRC_DIR)/common/pico_time/time.c \
 	$(PICO_SDK_SRC_DIR)/rp2_common/hardware_sync/sync.c \
+	$(PICO_SDK_SRC_DIR)/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c \
 	$(PICO_SDK_SRC_DIR)/common/pico_sync/lock_core.c \
 
 INCLUDE_PATHS += \
@@ -79,8 +81,6 @@ INCLUDE_PATHS += \
 	-I$(PICO_SDK_SRC_DIR)/common/pico_binary_info/include \
 	-I$(PICO_SDK_SRC_DIR)/rp2_common/pico_stdio/include/ \
 ############## PICO-SDK ##############
-
-EXTERNAL_DIR := $(ROOT_DIR)/external
 
 MCUBOOT_DIR := $(EXTERNAL_DIR)/mcuboot/boot/bootutil
 MCUBOOT_SRC_DIR := $(MCUBOOT_DIR)/src
@@ -119,7 +119,7 @@ DEP_DIR = $(BUILD_DIR)/dep
 DEP_CFLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)/$(*F).d
 
 MACH=cortex-m33
-CFLAGS= -g -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -Iinclude -g3 -O0 -Dstatic_assert=_Static_assert -DPICO_DEFAULT_UART=0 -DPICO_DEFAULT_UART_TX_PIN=0 -DPICO_DEFAULT_UART_RX_PIN=1 -DPICO_PLATFORM=rp2350 -DPICO_BOARD=pico2
+CFLAGS= -g -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -Iinclude -g3 -O0 -Dstatic_assert=_Static_assert -DPICO_DEFAULT_UART=0 -DPICO_DEFAULT_UART_TX_PIN=0 -DPICO_DEFAULT_UART_RX_PIN=1
 LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft -T $(TARGET).ld -Wl,--wrap=vprintf,-Map=$(BUILD_DIR)/$(TARGET).map --specs=rdimon.specs -lc -lrdimon -Wl,--entry=Reset_Handler -nostartfiles
 
 
@@ -163,15 +163,7 @@ $(DEP_DIR):
 
 $(OBJ_FILES): Makefile
 
-# MCUboot should really be included as a submodule in a real project
-# Let's do a cheap hack and clone it here instead
-$(MCUBOOT_DIR):
-	mkdir -p $(EXTERNAL_DIR)
-	git clone --recurse-submodules=. https://github.com/mcu-tools/mcuboot.git $(EXTERNAL_DIR)/mcuboot
-	cd $(EXTERNAL_DIR)/mcuboot && git checkout e512181 && git submodule update --recursive
-
 $(SRC_FILES): $(MCUBOOT_DIR)
-
 
 $(BUILD_DIR)/%.o: $(ROOT_DIR)/%.c | $(BUILD_DIR) $(DEP_DIR) $(FREERTOS_PORT_ROOT)
 	@echo "Compiling $(patsubst $(ROOT_DIR)/%,%,$<)"

@@ -71,11 +71,15 @@ int main(void) {
   struct boot_rsp rsp;
   int rv = boot_go(&rsp);
 
-  if (rv == 0) {
-    do_boot(&rsp);
+  // Use the hardened comparison macro
+  if (rv != 0) {
+      // Handle error - you can't jump to the app
+      EXAMPLE_LOG("Bootloader failed\n");
+      while(1); 
   }
   else{
-    EXAMPLE_LOG("Bootloader failed: %d\n", rv);
+    EXAMPLE_LOG("Bootloader verification passed, jumping to application");
+    do_boot(&rsp);
   }
   return 0;
 }

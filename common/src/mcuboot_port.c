@@ -10,9 +10,9 @@
 #include "hal/internal_flash.h"
 
 #include "mcuboot_config/mcuboot_logging.h"
+#include "mcuboot_config/mcuboot_config.h"
 #include "mcuboot_config/mcuboot_assert.h"
 #include "bootutil/image.h"
-
 
 /* Relative Offsets */
 #define BOOTLOADER_OFFSET           0x00000

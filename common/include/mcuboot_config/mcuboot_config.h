@@ -1,3 +1,13 @@
+// #ifndef MCUBOOT_CONFIG_H
+// #define MCUBOOT_CONFIG_H
+
+// // Clear any previous definition from the compiler or other headers
+#ifdef BOOT_NUM_SLOTS
+#undef BOOT_NUM_SLOTS
+#endif
+
+#define BOOT_NUM_SLOTS 1
+
 /* Single Slot Strategy */
 #define MCUBOOT_IMAGE_NUMBER 1
 #define MCUBOOT_DIRECT_XIP       // Runs code directly from Flash (Standard for RP2350)
@@ -12,8 +22,8 @@
 #define MCUBOOT_FLASH_WRITE_BLOCK_SIZE 256
 #define MCUBOOT_VERIFY_IMG_ADDRESS
 
-#undef BOOT_NUM_SLOTS
-#define BOOT_NUM_SLOTS 1
 #define CONF_MCUBOOT_HEADER_SIZE 256
 #define FLASH_SECTOR_SIZE 4096
 #define MCUBOOT_HAVE_LOGGING 1
+
+// #endif
